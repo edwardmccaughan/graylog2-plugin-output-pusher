@@ -24,7 +24,7 @@ import javax.crypto.spec.SecretKeySpec;
  * Please set pusherApplicationId, pusherApplicationKey, pusherApplicationSecret accordingly
  * before sending any request. 
  * 
- * @author Stephan Scheuermann
+ * @author Edward McCaughan, based on work by Stephan Scheuermann 
  * Copyright 2010. Licensed under the MIT license: http://www.opensource.org/licenses/mit-license.php
  */
 public class PusherClient {

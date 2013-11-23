@@ -1,8 +1,8 @@
-graylog2-plugin-output-email
+graylog2-plugin-output-pusher
 ============================
 
-Output plugin that sends every message as an email
+An output plugin for graylog2 that outputs to Pusher.com 
 
-Documentation: http://support.torch.sh/help/kb/plugins/email-output
+*Warning* This is somewhat of a messy hack! It seems to work pretty well, but use in mission critical purposes at your own risk...
 
-Available from the [Graylog2 plugin directory](http://www.graylog2.org/plugins).
+Based on the graylog email output plugin (https://github.com/Graylog2/graylog2-plugin-output-email/) and Stephan Scheuermann's pusher plugin for GAE (https://github.com/SScheuermann/gae-java-libpusher)
