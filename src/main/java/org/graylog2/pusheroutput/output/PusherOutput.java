@@ -18,15 +18,13 @@
  *
  */
 
-package org.graylog2.emailoutput.output;
+package org.graylog2.pusheroutput.output;
 
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.apache.commons.mail.EmailException;
-import org.apache.commons.mail.SimpleEmail;
 import org.graylog2.plugin.GraylogServer;
 import org.graylog2.plugin.logmessage.LogMessage;
 import org.graylog2.plugin.outputs.MessageOutput;
@@ -37,80 +35,43 @@ import org.graylog2.plugin.streams.Stream;
 /**
  * @author Lennart Koopmann <lennart@socketfeed.com>
  */
-public class EmailOutput implements MessageOutput {
+public class PusherOutput implements MessageOutput {
 
   private static final String NAME = "Pusher output";
   
   private Map<String, String> configuration;
-  private Pusher pusher
-  
-  public static final Set<String> REQUIRED_FIELDS = new HashSet<String>() {{ 
-    add("hostname");
-    add("port");
-    add("use_tls");
-    add("use_auth");
-    add("from_email");
-    add("from_name");
-  }};
+  private PusherClient pusher;
   
   public void initialize(Map<String, String> configuration) throws MessageOutputConfigurationException {
     this.configuration = configuration;
-    checkConfiguration();
-    connectToPusher();      
-      
+    pusher = new PusherClient(configuration);
   }
 
-  private void connectToPusher() {
-      val pusher = Pusher(APP_ID, KEY, SECRET)
-        val promise = pusher.trigger(channel, event, message)
-  }
 
 
   public void write(List<LogMessage> messages, OutputStreamConfiguration streamConfiguration, GraylogServer server) throws Exception {
-      for (LogMessage msg : messages) {
-          for (Stream stream : msg.getStreams()) {
-              Set<Map<String, String>> configuredOutputs = streamConfiguration.get(stream.getId());
-
-              if (configuredOutputs != null) {
-                  for (Map<String, String> config : configuredOutputs) {
-                      sendMail(msg, config.get("receiver"), config.get("subject"));
-                  }
-              }
-          }
-      }
+    for (LogMessage msg : messages) {
+      sendMail(msg);
+    }
   }
 
   public Map<String, String> getRequestedConfiguration() {
       Map<String, String> config = new HashMap<String, String>();
 
-      config.put("pusher_key", "pusher key");
-      config.put("channel", "pusher chanel")
-      
-      return config;
-  }
-  
-  public Map<String, String> getRequestedStreamConfiguration() {
-      Map<String, String> config = new HashMap<String, String>();
-      
-      config.put("receiver", "Receiver email address");
-      config.put("subject", "Email subject");
+      config.put("application_key", "pusher application key");
+      config.put("application_id", "pusher application id");
+      config.put("application_secret", "pusher application secret");
       
       return config;
   }
 
+   public Map<String, String> getRequestedStreamConfiguration() {
+        Map<String, String> config = new HashMap<String, String>();        
+        return config;
+    }
+
   public String getName() {
       return NAME;
-  }
-  
-  private void checkConfiguration() throws MessageOutputConfigurationException {
-      for (String field : REQUIRED_FIELDS) {
-          if (!configSet(configuration, field)) { throw new MessageOutputConfigurationException("Missing configuration option: " + field); }
-      }
-      
-      if (configuration.get("use_auth").equals("true")) {
-          if (!configSet(configuration, "username")) { throw new MessageOutputConfigurationException("Missing configuration option: username"); }
-          if (!configSet(configuration, "password")) { throw new MessageOutputConfigurationException("Missing configuration option: password"); }
-      }
   }
   
   private boolean configSet(Map<String, String> target, String key) {
@@ -118,12 +79,9 @@ public class EmailOutput implements MessageOutput {
               && target.get(key) != null && !target.get(key).isEmpty();
   }
 
-  private void sendMail(LogMessage msg, String receiver, String subject) throws EmailException {
+  private void sendMail(LogMessage msg){
+      System.out.println("PUSHER: sending message");
       // msg.getFullMessage()
-      //msg.getShortMessage()
-      StringBuilder sb = new StringBuilder();
-      sb.append(msg.getShortMessage());
-      Pusher.triggerPush("site_events", "event", "{\"event\":\"new_user\"}");
-      return sb.toString();
+      pusher.triggerPush("site_events", "event", msg.getShortMessage());
   }
 }

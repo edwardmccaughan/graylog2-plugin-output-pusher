@@ -2,12 +2,12 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>org.graylog2.email-output</groupId>
-  <artifactId>graylog2-output-email</artifactId>
+  <groupId>org.graylog2.pusheroutput.output</groupId>
+  <artifactId>graylog2-output-pusher</artifactId>
   <version>0.10.0</version>
   <packaging>jar</packaging>
 
-  <name>graylog2-output-email</name>
+  <name>graylog2-output-pusher</name>
   <url>http://maven.apache.org</url>
 
   <properties>
@@ -31,12 +31,6 @@
       <artifactId>graylog2-plugin</artifactId>
       <version>0.10.12</version>
     </dependency>
-    <dependency>
-      <groupId>com.pusher</groupId>
-      <artifactId>pusher-java-client</artifactId>
-      <version>0.1.0-beta.1</version>
-      <scope>provided</scope>
-    </dependency>
   </dependencies>
 
   <build>
@@ -46,7 +40,7 @@
             <artifactId>maven-assembly-plugin</artifactId>
             <version>2.2.1</version>
             <configuration>
-                <finalName>graylog2-plugin-output-email</finalName>
+                <finalName>graylog2-plugin-output-pusher</finalName>
                 <descriptorRefs>
                     <descriptorRef>jar-with-dependencies</descriptorRef>
                 </descriptorRefs>
@@ -59,22 +53,9 @@
         <configuration>
           <source>1.5</source>
           <target>1.5</target>
+          <compilerArgument>-proc:none</compilerArgument>
         </configuration>
       </plugin>
     </plugins>
   </build>
-
-  <repository>
-    <id>pusher-java-client-mvn-repo</id>
-    <name>Pusher Java Client Library</name>
-    <url>https://raw.github.com/pusher/pusher-java-client/mvn-repo/</url>
-    <!-- Update the following as required -->
-    <releases>
-      <enabled>true</enabled>
-    </releases>
-    <snapshots>
-      <enabled>true</enabled>
-    </snapshots>
-  </repository>
-
 </project>
